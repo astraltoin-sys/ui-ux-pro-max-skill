@@ -3,9 +3,24 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    color-scheme: dark;
+  }
+
   body {
-    @apply bg-stone-950 text-stone-100 antialiased;
-    font-family: "Inter", system-ui, sans-serif;
+    @apply bg-[#120e0b] text-stone-100 antialiased;
+    font-family: "Karla", system-ui, sans-serif;
+  }
+
+  /* Accessible focus rings */
+  :focus-visible {
+    outline: 2px solid #f59e0b;
+    outline-offset: 2px;
+  }
+
+  /* Tabular numbers for all monetary and counter values */
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
   }
 }
 
@@ -17,20 +32,21 @@
     width: 6px;
     height: 6px;
   }
-  .scrollbar-thin::-webkit-scrollbar-thumb {
-    @apply bg-stone-700 rounded-full;
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: #1a1410;
   }
-  .receipt-font {
-    font-family: "Courier New", monospace;
-    font-size: 12px;
-    line-height: 1.4;
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    @apply bg-[#3d2e24] rounded-full;
   }
 }
 
+/* Realistic Thermal Receipt with serrilha paper tear */
 .thermal-receipt {
-  font-family: "Courier New", monospace;
-  background: #fafaf7;
+  font-family: "JetBrains Mono", "Courier New", monospace;
+  background: #faf8f5;
+  color: #000;
   position: relative;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
 }
 
 .thermal-receipt::before,
@@ -40,35 +56,63 @@
   left: 0;
   right: 0;
   height: 8px;
-  background-image: radial-gradient(circle, transparent 4px, #fafaf7 4px);
-  background-size: 12px 8px;
+  background-image: radial-gradient(circle, transparent 4px, #faf8f5 4px);
+  background-size: 10px 8px;
   background-repeat: repeat-x;
+  pointer-events: none;
 }
 
 .thermal-receipt::before {
-  top: -1px;
+  top: -8px;
 }
 
 .thermal-receipt::after {
-  bottom: -1px;
+  bottom: -8px;
   transform: rotate(180deg);
 }
 
+/* In-DOM Print Portal */
+#print-receipt-portal {
+  display: none;
+}
+
+/* Global Print Stylesheet */
 @media print {
-  body * {
-    visibility: hidden;
+  /* When printing-active class is on body, hide everything EXCEPT the print portal */
+  body.printing-active > *:not(#print-receipt-portal) {
+    display: none !important;
   }
-  .print-area,
-  .print-area * {
-    visibility: visible;
+
+  body.printing-active #print-receipt-portal {
+    display: block !important;
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 2px !important;
+    background: #fff !important;
+    color: #000 !important;
   }
-  .print-area {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
+
+  body {
+    background: #fff !important;
+    color: #000 !important;
   }
+
   .no-print {
     display: none !important;
+  }
+}
+
+/* Respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
