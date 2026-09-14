@@ -1,0 +1,201 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =========================================================================
+   Design tokens — paleta "Espresso & Amber" (casa noturna / bar)
+   Gerada a partir do ui-ux-pro-max: estilo minimalista de alto contraste,
+   hierarquia tipografica forte e foco em legibilidade sob pouca luz.
+   ========================================================================= */
+:root {
+  --ink-950: #0b0a0c;
+  --ink-900: #121015;
+  --ink-850: #17141b;
+  --ink-800: #1d1922;
+  --ink-700: #282231;
+  --ink-600: #3a3245;
+
+  --amber-300: #fcd34d;
+  --amber-400: #f5b32b;
+  --amber-500: #e69511;
+
+  --status-novo: #f97316;
+  --status-preparando: #38bdf8;
+  --status-pronto: #34d399;
+  --status-pago: #a78bfa;
+
+  color-scheme: dark;
+}
+
+@layer base {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-ink-950 text-ink-50 antialiased;
+    font-family: 'Karla', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    font-feature-settings: 'tnum' 1;
+    background-image:
+      radial-gradient(1100px 520px at 12% -8%, rgba(245, 179, 43, 0.09), transparent 60%),
+      radial-gradient(900px 460px at 100% 0%, rgba(167, 139, 250, 0.07), transparent 55%);
+    background-attachment: fixed;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: 'Playfair Display SC', Georgia, serif;
+    letter-spacing: 0.01em;
+  }
+
+  /* Numeros tabulares: essencial em PDV/KDS para alinhar valores. */
+  .tabular,
+  table,
+  .font-mono {
+    font-variant-numeric: tabular-nums;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(245, 179, 43, 0.18);
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(245, 179, 43, 0.34);
+    background-clip: content-box;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--amber-400);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+}
+
+@layer components {
+  /* ---------------- Superficies ---------------- */
+  .surface {
+    @apply rounded-2xl border border-white/[.07] bg-ink-850/80 shadow-card backdrop-blur-sm;
+  }
+
+  .surface-strong {
+    @apply rounded-2xl border border-white/10 bg-ink-800/70;
+  }
+
+  .label-xs {
+    @apply text-[11px] font-semibold uppercase tracking-[.14em] text-ink-400;
+  }
+
+  .divider {
+    @apply h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent;
+  }
+
+  /* ---------------- Bobina termica (visualizador) ---------------- */
+  .receipt-paper {
+    background: #fdfbf7;
+    color: #14100c;
+    font-family: 'JetBrains Mono', ui-monospace, 'Courier New', monospace;
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.6) inset,
+      0 18px 40px -18px rgba(0, 0, 0, 0.85),
+      0 2px 6px rgba(0, 0, 0, 0.35);
+    /* Textura leve de papel termico */
+    background-image:
+      linear-gradient(rgba(0, 0, 0, 0.018) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 0, 0, 0.014) 1px, transparent 1px);
+    background-size: 100% 4px, 4px 100%;
+  }
+
+  .receipt-line {
+    white-space: pre;
+    line-height: 1.35;
+  }
+
+  .receipt-line--duplo {
+    font-size: 1.6em;
+    letter-spacing: 0.02em;
+    line-height: 1.25;
+  }
+
+  .receipt-line--condensado {
+    font-size: 0.82em;
+    letter-spacing: -0.01em;
+  }
+
+  .receipt-line--invertido {
+    background: #14100c;
+    color: #fdfbf7;
+    display: inline-block;
+  }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .safe-bottom {
+    padding-bottom: max(env(safe-area-inset-bottom), 0px);
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* =========================================================================
+   Impressao (usado dentro do iframe oculto da estacao de impressao)
+   ========================================================================= */
+@media print {
+  html,
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+  }
+
+  .no-print,
+  .no-print * {
+    display: none !important;
+  }
+
+  .print-page {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .print-page + .print-page {
+    break-before: page;
+    page-break-before: always;
+  }
+}
+
+/* Respeita quem pediu menos movimento (WCAG 2.3.3 / prefers-reduced-motion). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
