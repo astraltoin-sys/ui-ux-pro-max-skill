@@ -4,7 +4,8 @@
 
 @layer base {
   body {
-    @apply bg-gray-50 text-gray-900 antialiased;
+    @apply bg-stone-950 text-stone-100 antialiased;
+    font-family: "Inter", system-ui, sans-serif;
   }
 }
 
@@ -17,7 +18,7 @@
     height: 6px;
   }
   .scrollbar-thin::-webkit-scrollbar-thumb {
-    @apply bg-gray-300 rounded-full;
+    @apply bg-stone-700 rounded-full;
   }
   .receipt-font {
     font-family: "Courier New", monospace;
@@ -26,7 +27,6 @@
   }
 }
 
-/* Thermal receipt paper effect */
 .thermal-receipt {
   font-family: "Courier New", monospace;
   background: #fafaf7;

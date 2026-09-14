@@ -1,18 +1,20 @@
 import { Routes, Route } from "react-router-dom";
 import { Home } from "./pages/Home";
-import { Menu } from "./pages/Menu";
-import { KDS } from "./pages/KDS";
-import { POS } from "./pages/POS";
-import { PrintStation } from "./pages/PrintStation";
+import { Tavolo } from "./pages/Tavolo";
+import { Bar } from "./pages/Bar";
+import { Cassa } from "./pages/Cassa";
+import { Stampa } from "./pages/Stampa";
+import { Gestione } from "./pages/Gestione";
 
 export default function App() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
-      <Route path="/menu" element={<Menu />} />
-      <Route path="/kds" element={<KDS />} />
-      <Route path="/pos" element={<POS />} />
-      <Route path="/print" element={<PrintStation />} />
+      <Route path="/tavolo/:numero" element={<Tavolo />} />
+      <Route path="/cassa" element={<Cassa />} />
+      <Route path="/bar" element={<Bar />} />
+      <Route path="/stampa" element={<Stampa />} />
+      <Route path="/gestione" element={<Gestione />} />
     </Routes>
   );
 }

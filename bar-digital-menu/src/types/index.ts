@@ -1,8 +1,8 @@
-export type MesaStatus = "livre" | "ocupada";
-export type PedidoStatus = "novo" | "preparando" | "pronto" | "fechado";
-export type FormaPagamento = "dinheiro" | "cartao" | "pix" | null;
-export type PrintTipo = "bar" | "caixa";
-export type PrintStatus = "pendente" | "impresso";
+export type MesaStatus = "libero" | "occupato";
+export type PedidoStatus = "nuovo" | "in_preparazione" | "pronto" | "pagato";
+export type FormaPagamento = "contanti" | "carta" | null;
+export type PrintTipo = "bar" | "cassa";
+export type PrintStatus = "pendente" | "stampato";
 export type BobinaSize = "80mm" | "58mm";
 
 export interface Mesa {
@@ -19,6 +19,7 @@ export interface Produto {
   categoria: string;
   preco: number;
   descricao: string;
+  emoji: string;
   disponivel: boolean;
 }
 
@@ -26,6 +27,7 @@ export interface ItemPedido {
   id: string;
   produtoId: string;
   nome: string;
+  emoji: string;
   preco: number;
   quantidade: number;
   observacao: string;
@@ -38,8 +40,6 @@ export interface Pedido {
   mesaNumero: number;
   itens: ItemPedido[];
   status: PedidoStatus;
-  subtotal: number;
-  servico: number;
   total: number;
   formaPagamento: FormaPagamento;
   createdAt: number;

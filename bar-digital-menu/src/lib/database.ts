@@ -31,15 +31,29 @@ class Database {
     this.listeners.forEach((fn) => fn());
   }
 
+  addProduto(produto: Omit<Produto, "id" | "disponivel">): Produto {
+    const newProduto: Produto = {
+      ...produto,
+      id: `p${Date.now()}`,
+      disponivel: true,
+    };
+    this.produtos.push(newProduto);
+    this.notify();
+    return newProduto;
+  }
+
+  removeProduto(id: string) {
+    this.produtos = this.produtos.filter((p) => p.id !== id);
+    this.notify();
+  }
+
   criarPedido(mesaId: string, itens: ItemPedido[]): Pedido {
     const mesa = this.mesas.find((m) => m.id === mesaId);
-    if (!mesa) throw new Error("Mesa não encontrada");
+    if (!mesa) throw new Error("Tavolo non trovato");
 
     this.pedidoCounter++;
     const now = Date.now();
-    const subtotal = itens.reduce((sum, i) => sum + i.preco * i.quantidade, 0);
-    const servico = subtotal * 0.1;
-    const total = subtotal + servico;
+    const total = itens.reduce((sum, i) => sum + i.preco * i.quantidade, 0);
 
     const pedido: Pedido = {
       id: `ped-${now}`,
@@ -47,9 +61,7 @@ class Database {
       mesaId,
       mesaNumero: mesa.numero,
       itens,
-      status: "novo",
-      subtotal,
-      servico,
+      status: "nuovo",
       total,
       formaPagamento: null,
       createdAt: now,
@@ -57,8 +69,7 @@ class Database {
     };
 
     this.pedidos.unshift(pedido);
-
-    mesa.status = "ocupada";
+    mesa.status = "occupato";
     mesa.pedidoId = pedido.id;
     mesa.aberturaEm = now;
 
@@ -71,17 +82,16 @@ class Database {
       createdAt: now,
       impressoEm: null,
     };
-    const caixaJob: PrintJob = {
-      id: `print-${now}-caixa`,
+    const cassaJob: PrintJob = {
+      id: `print-${now}-cassa`,
       pedidoId: pedido.id,
       pedidoNumero: pedido.numero,
-      tipo: "caixa",
+      tipo: "cassa",
       status: "pendente",
       createdAt: now,
       impressoEm: null,
     };
-    this.printJobs.unshift(barJob, caixaJob);
-
+    this.printJobs.unshift(barJob, cassaJob);
     this.notify();
     return pedido;
   }
@@ -90,11 +100,11 @@ class Database {
     const pedido = this.pedidos.find((p) => p.id === pedidoId);
     if (!pedido) return;
     pedido.status = status;
-    if (status === "fechado") {
+    if (status === "pagato") {
       pedido.fechadoEm = Date.now();
       const mesa = this.mesas.find((m) => m.id === pedido.mesaId);
       if (mesa) {
-        mesa.status = "livre";
+        mesa.status = "libero";
         mesa.pedidoId = null;
         mesa.aberturaEm = null;
       }
@@ -106,11 +116,11 @@ class Database {
     const pedido = this.pedidos.find((p) => p.id === pedidoId);
     if (!pedido) return;
     pedido.formaPagamento = formaPagamento;
-    pedido.status = "fechado";
+    pedido.status = "pagato";
     pedido.fechadoEm = Date.now();
     const mesa = this.mesas.find((m) => m.id === pedido.mesaId);
     if (mesa) {
-      mesa.status = "livre";
+      mesa.status = "libero";
       mesa.pedidoId = null;
       mesa.aberturaEm = null;
     }
@@ -120,7 +130,7 @@ class Database {
   marcarImpresso(printJobId: string) {
     const job = this.printJobs.find((j) => j.id === printJobId);
     if (job) {
-      job.status = "impresso";
+      job.status = "stampato";
       job.impressoEm = Date.now();
       this.notify();
     }
@@ -153,6 +163,10 @@ class Database {
 
   getPedidoById(id: string): Pedido | undefined {
     return this.pedidos.find((p) => p.id === id);
+  }
+
+  getPedidosAttivi(): Pedido[] {
+    return this.pedidos.filter((p) => p.status !== "pagato");
   }
 }
 
